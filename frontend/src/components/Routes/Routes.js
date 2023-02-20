@@ -1,0 +1,32 @@
+import { Route, Redirect } from 'react-router-dom';
+import { useSelctor } from 'react-redux';
+
+export const AuthRoute = ({ component: Component, path, exact }) => {
+    const loggedIn = useSelctor(state => !!state.session.user);
+
+    return (
+        <Route path={path} exact={exact} render={(props) => (
+            !loggedIn ? (
+                <Component {...props} />
+            ) : (
+                <Redirect to='/tweets' />
+            )
+        )} />
+    );
+};
+
+export const ProectedRoute = ({ component: Component, ...rest }) => {
+    const loggedIn = useSelctor(state => !!state.session.user);
+
+    return (
+        <Route
+            { ...rest }
+            render={props => loggedIn ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to='/login' />
+                )
+            }
+        />
+    );
+};
